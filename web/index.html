@@ -107,27 +107,32 @@
                 // Simulated API call - Replace this with actual API endpoint
                 await new Promise(resolve => setTimeout(resolve, 1500));
 
-                /*
-                const embeddings = await fetch('...', {
+                const embeddingResponse = await fetch('https://openai-pop-choice-embedding-worker.r-salehjan.workers.dev', {
                      method: 'POST',
                      headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(payload)
                 });
-                */
+
+                const recommendationResponse = await fetch('https://supabase-pop-choice-worker.r-salehjan.workers.dev', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(embeddingResponse.embedding)
+                });
 
                 const titleElement = document.getElementById('resultPage').querySelector('.movie-title');
-                const descriptionElement = document.getElementById('resultPage').querySelector('.movie-description');
+                titleElement.innerText = "Recommended movies"
 
-                // TODO Replace with value of `data`
-                titleElement.innerText = 'School of Rock (2009)';
-                descriptionElement.innerText = 'A fun and stupid movie about a wannabe rocker turned fraud substitute teacher forming a rock band with his students to win the Battle of the Bands';
+                const descriptionElement = document.getElementById('resultPage').querySelector('.movie-description');
+                descriptionElement.innerText = recommendationResponse.content
 
                 document.getElementById('questionPage').classList.remove('active');
                 document.getElementById('resultPage').classList.add('active');
-
             } catch (error) {
+                console.error(error)
                 showErrorToast('Something went wrong. Please try again.');
                 goAgain();
             } finally {
