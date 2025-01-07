@@ -9,7 +9,10 @@ export default {
 		ctx: ExecutionContext
 	): Promise<Response> {
 		const origin = request.headers.get('Origin') || '';
-		const allowedOrigins: Array<string> = ['http://localhost:5173'];
+		const allowedOrigins: Array<string> = [
+			'http://localhost:5173',
+			'https://pop-choice.pages.dev'
+		];
 
 		const corsHeaders = {
 			'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : '',
