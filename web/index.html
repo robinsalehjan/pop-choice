@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>PopChoice</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Question Page -->
+        <div id="questionPage" class="page active">
+            <div class="logo">
+                <img src="popchoice.png" class="popcorn">
+                <h1>PopChoice</h1>
+            </div>
+            <div class="question">What's your favorite movie and why?</div>
+            <input type="text" class="input-field" id="favoriteMovie">
+            <div class="error-message" id="favoriteMovieError">Please tell us your favorite movie</div>
+
+            <div class="question">Are you in the mood for something new or a classic?</div>
+            <input type="text" class="input-field" id="movieEra">
+            <div class="error-message" id="movieEraError">Please tell us what kind of era you prefer</div>
+
+            <div class="question">Do you wanna have fun or do you want something serious?</div>
+            <input type="text" class="input-field" id="movieType">
+            <div class="error-message" id="movieTypeError">Please tell us what type of movie you want</div>
+
+            <button class="button" onclick="showResult()">Let's Go</button>
+        </div>
+
+            <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Result Page -->
+        <div id="resultPage" class="page">
+            <div class="logo">
+                <img src="popchoice.png" alt="Popcorn" class="popcorn">
+                <h1>PopChoice</h1>
+            </div>
+            <div class="movie-card">
+                <h2 class="movie-title"></h2>
+                <p class="movie-description"></p>
+            </div>
+            <button class="button" onclick="goAgain()">Go Again</button>
+        </div>
+
+        <!-- Error Toast -->
+        <div class="error-toast" id="errorToast">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12" y2="16"></line>
+            </svg>
+            <span id="errorMessage">Something went wrong. Please try again.</span>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const fields = ['favoriteMovie', 'movieEra', 'movieType'];
+            let isValid = true;
+
+            fields.forEach(field => {
+                const value = document.getElementById(field).value.trim();
+                showError(field, !value);
+                if (!value) isValid = false;
+            });
+
+            return isValid;
+        }
+
+        function showError(inputId, show) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(inputId + 'Error');
+
+            if (show) {
+                input.classList.add('error');
+                error.classList.add('visible');
+            } else {
+                input.classList.remove('error');
+                error.classList.remove('visible');
+            }
+        }
+
+        function showErrorToast(message) {
+            const toast = document.getElementById('errorToast');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+
+        async function showResult() {
+            if (!validateForm()) return;
+
+            const loading = document.getElementById('loading');
+            loading.style.display = 'flex';
+
+            const favoriteMovie = document.getElementById('favoriteMovie').value;
+            const movieEra = document.getElementById('movieEra').value;
+            const movieType = document.getElementById('movieType').value;
+
+            const payload = { query: `${favoriteMovie}, ${movieEra}, ${movieType}` };
+
+            try {
+                // Simulated API call - Replace this with actual API endpoint
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                /*
+                const embeddings = await fetch('...', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                */
+
+                const titleElement = document.getElementById('resultPage').querySelector('.movie-title');
+                const descriptionElement = document.getElementById('resultPage').querySelector('.movie-description');
+
+                // TODO Replace with value of `data`
+                titleElement.innerText = 'School of Rock (2009)';
+                descriptionElement.innerText = 'A fun and stupid movie about a wannabe rocker turned fraud substitute teacher forming a rock band with his students to win the Battle of the Bands';
+
+                document.getElementById('questionPage').classList.remove('active');
+                document.getElementById('resultPage').classList.add('active');
+
+            } catch (error) {
+                showErrorToast('Something went wrong. Please try again.');
+                goAgain();
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function goAgain() {
+            // Reset input fields
+            document.getElementById('favoriteMovie').value = '';
+            document.getElementById('movieEra').value = '';
+            document.getElementById('movieType').value = '';
+
+            // Reset result fields
+            document.getElementById('resultPage').querySelector('.movie-title').innerText = '';
+            document.getElementById('resultPage').querySelector('.movie-description').innerText = '';
+
+            // Switch pages
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('questionPage').classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+name = "openai-pop-choice-embedding-worker"
+main = "src/index.ts"
+compatibility_date = "2024-11-12"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+[observability]
+enabled = true
+
+[[r2_buckets]]
+binding = "INGESTION_BUCKET"
+bucket_name = "pop-choice-ingestion-bucket"
+preview_bucket_name = "pop-choice-ingestion-bucket-preview"
+
+[triggers]
+crons = ["0 0 1 */2 *"]
