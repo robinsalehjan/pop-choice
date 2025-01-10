@@ -1,3 +1,3 @@
 export interface RequestPayload {
-  embedding: Float32Array
+  embedding: number[];
 }
