@@ -15,8 +15,9 @@ export default {
 		];
 
 		const isOriginAllowed = allowedOrigins.includes(origin);
+
 		const corsHeaders = {
-				'Access-Control-Allow-Origin': isOriginAllowed ? origin : undefined,
+				'Access-Control-Allow-Origin': isOriginAllowed ? origin : 'null',
 				'Access-Control-Allow-Methods': 'POST, OPTIONS',
 				'Access-Control-Allow-Headers': 'Content-Type',
 		};
@@ -56,14 +57,23 @@ export default {
 				// Return embedding with highest similarity score (i.e. first element in array)
 				const contentOfFirstMatch: string = data[0].content;
 				const responsePayload: ResponsePayload = { content: contentOfFirstMatch };
-				return new Response(JSON.stringify(responsePayload), { status: 200 });
+				return new Response(JSON.stringify(responsePayload), {
+					status: 200,
+					headers: { ...corsHeaders }
+				});
 			} else {
 				const responsePayload: ResponsePayload = { content: "No match found for query" };
-				return new Response(JSON.stringify(responsePayload), { status: 404 });
+				return new Response(JSON.stringify(responsePayload), {
+					status: 404,
+					headers: { ...corsHeaders }
+				});
 			}
 		} catch (error) {
 			console.error(`Failed to process request with: ${error}`);
-			return new Response(null, { status: 500 });
+			return new Response(null, {
+				status: 500,
+				headers: { ...corsHeaders }
+			});
 		}
 	},
 } satisfies ExportedHandler<Env>;
