@@ -52,31 +52,35 @@ export default {
 				match_count: 1
 			});
 
-			if (data.length > 0) {
-				// Return embedding with highest similarity score (i.e. first element in array)
-				const contentOfFirstMatch: string = data[0].content;
-				const responsePayload: ResponsePayload = { content: contentOfFirstMatch };
-				return new Response(JSON.stringify(responsePayload), {
-					status: 200,
-					headers: { ...corsHeaders }
-				});
-			} else {
+			if (error) {
+				throw new Error(`Database query failed: ${error.message}`);
+			}
+
+			if (!data) {
 				const responsePayload: ResponsePayload = { content: "No match found for query" };
 				return new Response(JSON.stringify(responsePayload), {
 					status: 404,
 					headers: { ...corsHeaders }
 				});
 			}
+
+			// Return embedding with highest similarity score (i.e. first element in array)
+			const contentOfFirstMatch: string = data[0].content;
+			const responsePayload: ResponsePayload = { content: contentOfFirstMatch };
+			return new Response(JSON.stringify(responsePayload), {
+				status: 200,
+				headers: { ...corsHeaders }
+			});
+
 		} catch (error) {
 			console.error(`Failed to process request with: ${error}`);
-			return new Response(JSON.stringify({
-				error: `Internal server error: ${error.message || 'Unknown error'}`
-			}), {
-				status: 500,
-				headers: {
-					...corsHeaders,
-					'Content-Type': 'application/json'
-				}
+			return new Response(
+				JSON.stringify({ error: `Internal server error: ${error.message || 'Unknown error'}` }), {
+					status: 500,
+					headers: {
+						...corsHeaders,
+						'Content-Type': 'application/json'
+					}
 			});
 		}
 	},
