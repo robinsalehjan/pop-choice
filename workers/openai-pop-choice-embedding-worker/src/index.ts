@@ -31,13 +31,12 @@ export default {
 				'Access-Control-Allow-Headers': 'Content-Type',
 		};
 
-		// Handle CORS preflight requests
-		if (request.method === 'OPTIONS') {
-				if (!isOriginAllowed) {
-						return new Response('CORS origin not allowed.', { status: 403 });
-				}
-				return new Response(null, { headers: corsHeaders });
-		}
+    // Handle CORS preflight requests
+    if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				headers: corsHeaders
+      });
+    }
 
 		// Only process POST requests
 		if (request.method !== 'POST') {
