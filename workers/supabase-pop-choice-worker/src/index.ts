@@ -46,11 +46,13 @@ export default {
 
 			const requestPayload = await request.json() as RequestPayload;
 
-			const { data, error } = await supabase.rpc('match_movies', {
-				query_embedding: requestPayload.embedding,
-				match_threshold: 0.5,
-				match_count: 1
-			});
+			const { data, error } = await supabase
+				.schema('public')
+				.rpc('match_movies', {
+					query_embedding: requestPayload.embedding,
+					match_threshold: 0.5,
+					match_count: 1
+				});
 
 			if (error) {
 				throw new Error(`Database query failed: ${error.message}`);
