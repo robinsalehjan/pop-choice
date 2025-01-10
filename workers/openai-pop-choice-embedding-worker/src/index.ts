@@ -17,16 +17,16 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		const origin = request.headers.get('Origin') || '';
 		const allowedOrigins: Array<string> = [
-				'http://localhost:5173',
-				'https://pop-choice.pages.dev'
+			'http://localhost:5173',
+			'https://pop-choice.pages.dev'
 		];
 
+		const origin = request.headers.get('Origin') || '';
 		const isOriginAllowed = allowedOrigins.includes(origin);
 
 		const corsHeaders = {
-				'Access-Control-Allow-Origin': isOriginAllowed ? origin : undefined,
+				'Access-Control-Allow-Origin': isOriginAllowed ? origin : 'null',
 				'Access-Control-Allow-Methods': 'POST, OPTIONS',
 				'Access-Control-Allow-Headers': 'Content-Type',
 		};
