@@ -1,3 +1,3 @@
 export interface ResponsePayload {
-  embedding: string;
+  embedding: number[];
 }
