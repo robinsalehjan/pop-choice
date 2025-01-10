@@ -79,11 +79,16 @@ export default {
 						headers: { ...corsHeaders }
 				});
 		} catch (error) {
-				console.error('Error:', error);
-				return new Response(null, {
-						status: 500,
-						headers: { ...corsHeaders }
-				});
+			console.error(`Failed to process request with: ${error}`);
+			return new Response(JSON.stringify({
+				error: `Internal server error: ${error.message || 'Unknown error'}`
+			}), {
+				status: 500,
+				headers: {
+					...corsHeaders,
+					'Content-Type': 'application/json'
+				}
+			});
 		}
 	},
 } satisfies ExportedHandler<Env>;

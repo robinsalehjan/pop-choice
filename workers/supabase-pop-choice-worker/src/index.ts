@@ -69,9 +69,14 @@ export default {
 			}
 		} catch (error) {
 			console.error(`Failed to process request with: ${error}`);
-			return new Response(null, {
+			return new Response(JSON.stringify({
+				error: `Internal server error: ${error.message || 'Unknown error'}`
+			}), {
 				status: 500,
-				headers: { ...corsHeaders }
+				headers: {
+					...corsHeaders,
+					'Content-Type': 'application/json'
+				}
 			});
 		}
 	},
