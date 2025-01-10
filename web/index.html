@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +7,22 @@
     <title>PopChoice</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" role="main">
         <!-- Question Page -->
-        <div id="questionPage" class="page active">
-            <div class="logo">
-                <img src="popchoice.png" class="popcorn">
+        <div id="questionPage" class="page active" role="form" aria-label="Movie Preferences Form">
+            <div class="logo" role="banner">
+                <img src="popchoice.png" class="popcorn" alt="PopChoice Logo">
                 <h1>PopChoice</h1>
             </div>
-            <div class="question">What's your favorite movie and why?</div>
-            <input type="text" class="input-field" id="favoriteMovie">
-            <div class="error-message" id="favoriteMovieError">Please tell us your favorite movie</div>
+            <div class="question" id="favoriteMovieLabel">What's your favorite movie and why?</div>
+            <input
+                type="text"
+                class="input-field"
+                id="favoriteMovie"
+                aria-labelledby="favoriteMovieLabel"
+                aria-required="true"
+                aria-invalid="false">
+            <div class="error-message" id="favoriteMovieError" role="alert">Please tell us your favorite movie</div>
 
             <div class="question">Are you in the mood for something new or a classic?</div>
             <input type="text" class="input-field" id="movieEra">
@@ -87,56 +93,94 @@
 
         function showErrorToast(message) {
             const toast = document.getElementById('errorToast');
-            toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), 3000);
+            // Add small delay before showing toast
+            setTimeout(() => {
+                toast.classList.add('visible');
+                setTimeout(() => toast.classList.remove('visible'), 3000);
+            }, 100);
         }
 
         async function showResult() {
             if (!validateForm()) return;
 
             const loading = document.getElementById('loading');
-            loading.style.display = 'flex';
+            const questionPage = document.getElementById('questionPage');
+            const resultPage = document.getElementById('resultPage');
 
-            const favoriteMovie = document.getElementById('favoriteMovie').value;
-            const movieEra = document.getElementById('movieEra').value;
-            const movieType = document.getElementById('movieType').value;
+            // Start with question page transition
+            questionPage.style.opacity = '0';
+            questionPage.style.visibility = 'hidden';
 
-            const payload = { query: `${favoriteMovie}, ${movieEra}, ${movieType}` };
+            // Wait for transition to complete, then show loading
+            setTimeout(() => {
+                questionPage.classList.remove('active');
+                loading.style.display = 'flex';
+            }, 300);
 
             try {
-                // Simulated API call - Replace this with actual API endpoint
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                // Get form values once at the start
+                const formData = {
+                    favoriteMovie: document.getElementById('favoriteMovie').value.trim(),
+                    movieEra: document.getElementById('movieEra').value.trim(),
+                    movieType: document.getElementById('movieType').value.trim()
+                };
 
+                const payload = {
+                    query: `${formData.favoriteMovie}, ${formData.movieEra}, ${formData.movieType}`
+                };
+
+                // Get recommendation
                 const embeddingResponse = await fetch('https://openai-pop-choice-embedding-worker.r-salehjan.workers.dev', {
-                     method: 'POST',
-                     headers: {
+                    method: 'POST',
+                    headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(payload)
                 });
+
+                if (!embeddingResponse.ok) {
+                    throw new Error(`Embedding API error: ${embeddingResponse.status}`);
+                }
+
+                const embeddingData = await embeddingResponse.json();
 
                 const recommendationResponse = await fetch('https://supabase-pop-choice-worker.r-salehjan.workers.dev', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(embeddingResponse.embedding)
+                    body: JSON.stringify(embeddingData.embedding)
                 });
 
-                const titleElement = document.getElementById('resultPage').querySelector('.movie-title');
-                titleElement.innerText = "Recommended movies"
+                if (!recommendationResponse.ok) {
+                    throw new Error(`Recommendation API error: ${recommendationResponse.status}`);
+                }
 
-                const descriptionElement = document.getElementById('resultPage').querySelector('.movie-description');
-                descriptionElement.innerText = recommendationResponse.content
+                const recommendationData = await recommendationResponse.json();
 
-                document.getElementById('questionPage').classList.remove('active');
-                document.getElementById('resultPage').classList.add('active');
-            } catch (error) {
-                console.error(error)
-                showErrorToast('Something went wrong. Please try again.');
-                goAgain();
-            } finally {
+                // Update UI elements
+                const resultPage = document.getElementById('resultPage');
+                resultPage.querySelector('.movie-title').innerText = "Recommended movies";
+                resultPage.querySelector('.movie-description').innerText = recommendationData.content;
+
+                // Hide loading and show result page
                 loading.style.display = 'none';
+                resultPage.classList.add('active');
+
+            } catch (error) {
+                console.error('Error in showResult:', error);
+                showErrorToast('Something went wrong. Please try again.');
+                loading.style.display = 'none';
+
+                // Reset the question page visibility
+                questionPage.style.opacity = '1';
+                questionPage.style.visibility = 'visible';
+                questionPage.classList.add('active');
+
+                // Reset form fields
+                document.getElementById('favoriteMovie').value = '';
+                document.getElementById('movieEra').value = '';
+                document.getElementById('movieType').value = '';
             }
         }
 
@@ -150,9 +194,13 @@
             document.getElementById('resultPage').querySelector('.movie-title').innerText = '';
             document.getElementById('resultPage').querySelector('.movie-description').innerText = '';
 
-            // Switch pages
-            document.getElementById('resultPage').classList.remove('active');
-            document.getElementById('questionPage').classList.add('active');
+            // Switch pages with transition
+            document.getElementById('resultPage').style.opacity = '0';
+            document.getElementById('resultPage').style.visibility = 'hidden';
+            setTimeout(() => {
+                document.getElementById('resultPage').classList.remove('active');
+                document.getElementById('questionPage').classList.add('active');
+            }, 300);
         }
     </script>
 </body>
