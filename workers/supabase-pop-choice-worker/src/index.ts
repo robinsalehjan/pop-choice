@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
-import RequestPayload from './types/request-payload';
-import ResponsePayload from './types/response-payload';
+import { RequestPayload } from './types/request-payload';
+import { ResponsePayload } from './types/response-payload';
 
 export default {
 	async fetch(
@@ -42,7 +42,7 @@ export default {
 		try {
 			const databaseUrl: string = env.SUPABASE_URL;
 			const databaseAuthKey: string = env.SUPABASE_API_KEY;
-			const supabase: SupabaseClient = createClient(databaseUrl, databaseAuthKey);
+			const supabase = createClient(databaseUrl, databaseAuthKey);
 
 			const requestPayload = await request.json() as RequestPayload;
 

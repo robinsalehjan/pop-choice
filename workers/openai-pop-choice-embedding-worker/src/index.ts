@@ -1,6 +1,6 @@
 import performInsertEmbeddings from './schedule-handler';
-import RequestPayload from './types/request-payload';
-import ResponsePayload from './types/response-payload';
+import { RequestPayload } from './types/request-payload';
+import { ResponsePayload } from './types/response-payload';
 import OpenAI from 'openai';
 
 export default {
@@ -9,7 +9,7 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	) {
-    ctx.waitUntil(performInsertEmbeddings());
+    ctx.waitUntil(performInsertEmbeddings(event, env));
   },
 
 	async fetch(
