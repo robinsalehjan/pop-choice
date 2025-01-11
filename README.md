@@ -1,17 +1,17 @@
 # [PopChoice](https://pop-choice.pages.dev)
 
-This repository is a movie recommendation system demonstrating the integration between CloudFlare Workers, CloudFlare AI Gateway, CloudFlare Pages, PostgreSQL with PGVector extension, and OpenAI API for semantic search capabilities.
+This repository is a movie recommendation system demonstrating the integration between CloudFlare Workers, CloudFlare AI Gateway, CloudFlare Pages, Supabase/PostgreSQL with PGVector extension, and OpenAI API for semantic search capabilities.
 
 ## Architecture
 
 The application consists of three main components:
 - A frontend web application built with vanilla JavaScript
 - An OpenAI embedding worker for generating vector embeddings
-- A Supabase worker for vector similarity search
+- A Supabase/PostgreSQL worker for performing vector similarity search
 
 ### Key Features
 - Vector embeddings generation using OpenAI's text-embedding-ada-002 model
-- Vector similarity search using Supabase's pgvector extension
+- Vector similarity search using PostgreSQL with PGVector extension
 - Scheduled ingestion of movie data using CloudFlare Workers
 - CORS-enabled API endpoints for cross-origin requests
 
@@ -21,7 +21,7 @@ The application consists of three main components:
 - `node.js` >= 16
 - `npm` >= 8
 - A CloudFlare account with Workers and Pages enabled
-- A Supabase account with Vector extension enabled
+- A Supabase account with PGVector extension enabled
 - An OpenAI API key
 
 ### Running the Frontend Locally
