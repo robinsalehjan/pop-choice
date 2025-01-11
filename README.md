@@ -1,6 +1,6 @@
 # [PopChoice](https://pop-choice.pages.dev)
 
-This repository is a movie recommendation system demonstrating the integration between `CloudFlare Workers`, `CloudFlare AI Gateway`, `CloudFlare Pages`, `Supabase Vector Database`, and `OpenAI API` for semantic search capabilities.
+This repository is a movie recommendation system demonstrating the integration between CloudFlare Workers, CloudFlare AI Gateway, CloudFlare Pages, PostgreSQL with PGVector extension, and OpenAI API for semantic search capabilities.
 
 ## Architecture
 
@@ -65,15 +65,3 @@ The following environment variables need to be set in your CloudFlare Workers:
 #### Supabase Worker
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_API_KEY`: Your Supabase service role key
-
-## Development
-
-The project uses the following development tools:
-- Vite for frontend development
-- Wrangler for CloudFlare Workers development
-- TypeScript for type safety
-- Vitest for testing
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details
