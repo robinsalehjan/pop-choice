@@ -48,7 +48,7 @@ export default {
 
 			const { data, error } = await supabase
 				.schema('public')
-				.rpc('match_movies', {
+				.rpc('public.match_movies', {
 					query_embedding: requestPayload.embedding,
 					match_threshold: 0.5,
 					match_count: 1
