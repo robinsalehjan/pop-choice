@@ -12,7 +12,7 @@ bucket_name = "pop-choice-ingestion-bucket"
 preview_bucket_name = "pop-choice-ingestion-bucket-preview"
 
 [triggers]
-crons = ["0 0 * * 0"]
+crons = ["10 7 * * 2-6"]
 
 [[kv_namespaces]]
 binding = "KV_STORE"
