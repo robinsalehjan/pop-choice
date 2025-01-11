@@ -1,16 +1,16 @@
-import performInsertEmbeddings from './schedule-handler';
+import { performInsertEmbeddings } from './schedule-handler';
 import { RequestPayload } from './types/request-payload';
 import { ResponsePayload } from './types/response-payload';
 import OpenAI from 'openai';
 
 export default {
 	async scheduled(
-		event: ScheduledEvent,
+		controller: ScheduledController,
 		env: Env,
 		ctx: ExecutionContext
 	) {
-    ctx.waitUntil(performInsertEmbeddings(event, env));
-  },
+		ctx.waitUntil(performInsertEmbeddings(controller.scheduledTime, env));
+	},
 
 	async fetch(
 		request: Request,

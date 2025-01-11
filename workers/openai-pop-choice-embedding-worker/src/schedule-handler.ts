@@ -3,11 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { CharacterTextSplitter } from "langchain/text_splitter";
 import { Document } from "langchain/document";
 
-export default {
-  async performInsertEmbeddings(
-    event: ScheduledEvent,
-    env: Env
-  ) {
+export const performInsertEmbeddings = async (scheduledTime: number, env: Env): Promise<Response> => {
 		const openai = new OpenAI({
 			apiKey: env.OPENAI_API_KEY,
 			baseURL: 'https://gateway.ai.cloudflare.com/v1/119e6a647b254157e00e8dd335535eab/pop-choice/openai',
