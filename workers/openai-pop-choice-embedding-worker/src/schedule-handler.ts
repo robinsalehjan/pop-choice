@@ -43,33 +43,45 @@ export const performInsertEmbeddings = async (scheduledTime: number, env: Env): 
 		const pageContents = documents.map((document) => document.pageContent);
 
 		try {
-			// Create embeddings for each page content
-			const response = await openai.embeddings.create({
-				model: "text-embedding-ada-002",
-				input: pageContents
-			});
+      const embeddings = await openai.embeddings.create({
+        model: "text-embedding-ada-002",
+        input: pageContents
+      });
 
-			if (pageContents.length !== response.data.length) {
-				throw new Error("number of embeddings does not match number of page contents");
-				return new Response(null, { status: 500 });
-			}
+      if (pageContents.length !== embeddings.data.length) {
+        throw new Error("Embedding count mismatch");
+      }
 
-			await Promise.all(
-				pageContents.map(async (content, index) => {
-						const embeddingObject = {
-								content: content,
-								embedding: response.data[index].embedding
-						};
-						await supabase.from('movies').insert(embeddingObject);
-						console.info(`Successfully inserted embedding object for content at index ${index} into database`);
-					})
-			);
+      const embeddingObjects = pageContents.map((content, index) => ({
+        content,
+        embedding: embeddings.data[index].embedding
+      }));
 
-			return new Response(null, { status: 200 });
+      const { error: insertError } = await supabase
+        .from('movies')
+        .insert(embeddingObjects);
+
+      if (insertError) {
+        throw new Error(`Database insertion failed: ${insertError.message}`);
+      }
+
+      console.info(`Successfully inserted ${embeddingObjects.length} embeddings`);
+
+      return new Response(
+        JSON.stringify({ success: true, count: embeddingObjects.length }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
 
 		} catch(error) {
-			console.error(`Failed to insert embedding with error: ${error.message}`);
-			return new Response(null, { status: 500 });
+      console.error('Embedding insertion failed:', error);
+      return new Response(
+        JSON.stringify({ error: error.message }), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json' }
+        }
+      );
 		}
-  },
-}
+};
