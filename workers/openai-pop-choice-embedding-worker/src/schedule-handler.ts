@@ -33,6 +33,7 @@ export const performInsertEmbeddings = async (scheduledTime: number, env: Env): 
     const data = encoder.encode(fileContents);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // Convert byte array to hex string by mapping each byte to 2-digit hex and joining
     const currentHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
     // Check if hash exists in KV store
