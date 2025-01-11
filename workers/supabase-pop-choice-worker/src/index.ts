@@ -14,26 +14,26 @@ export default {
 		const isOriginAllowed = allowedOrigins.includes(origin);
 
 		const corsHeaders = {
-				'Access-Control-Allow-Origin': isOriginAllowed ? origin : 'null',
-				'Access-Control-Allow-Methods': 'POST, OPTIONS',
-				'Access-Control-Allow-Headers': 'Content-Type',
+			'Access-Control-Allow-Origin': isOriginAllowed ? origin : 'null',
+			'Access-Control-Allow-Methods': 'POST, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
 		};
 
-    // Handle CORS preflight requests
-    if (request.method === 'OPTIONS') {
+		// Handle CORS preflight requests
+		if (request.method === 'OPTIONS') {
 			return new Response(null, {
 				headers: corsHeaders
-      });
-    }
+			});
+		}
 
 		// Only process POST requests
 		if (request.method !== 'POST') {
-				return new Response(JSON.stringify({
-						error: `${request.method} method not allowed.`
-				}), {
-						status: 405,
-						headers: corsHeaders
-				});
+			return new Response(JSON.stringify({
+				error: `${request.method} method not allowed.`
+			}), {
+				status: 405,
+				headers: corsHeaders
+			});
 		}
 
 		try {
@@ -44,12 +44,12 @@ export default {
 			const embeddings: RequestPayload = await request.json() as RequestPayload;
 
 			const { data, error } = await supabase
-				.schema('public')
-				.rpc('match_movies', {
-					query_embedding: embeddings,
-					match_threshold: 0.5,
-					match_count: 1
-				});
+			.schema('public')
+			.rpc('match_movies', {
+				query_embedding: embeddings,
+				match_threshold: 0.5,
+				match_count: 1
+			});
 
 			if (error) {
 				throw new Error(`Database query failed: ${error.message}`);
@@ -80,7 +80,7 @@ export default {
 						...corsHeaders,
 						'Content-Type': 'application/json'
 					}
-			});
-		}
-	},
-} satisfies ExportedHandler<Env>;
+				});
+			}
+		},
+	} satisfies ExportedHandler<Env>;
