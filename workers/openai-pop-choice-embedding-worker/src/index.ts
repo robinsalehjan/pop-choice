@@ -17,10 +17,7 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		const allowedOrigins: Array<string> = [
-			'http://localhost:5173',
-			'https://pop-choice.pages.dev'
-		];
+		const allowedOrigins: Array<string> = ['https://pop-choice.pages.dev'];
 
 		const origin = request.headers.get('Origin') || '';
 		const isOriginAllowed = allowedOrigins.includes(origin);
