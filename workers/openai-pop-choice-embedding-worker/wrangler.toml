@@ -12,4 +12,4 @@ bucket_name = "pop-choice-ingestion-bucket"
 preview_bucket_name = "pop-choice-ingestion-bucket-preview"
 
 [triggers]
-crons = ["0 0 1 */2 *"]
+crons = ["0 0 * * 0"]
