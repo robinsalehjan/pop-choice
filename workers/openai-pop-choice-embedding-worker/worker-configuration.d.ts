@@ -6,4 +6,5 @@ interface Env {
 	SUPABASE_URL: string;
 	SUPABASE_API_KEY: string;
 	INGESTION_BUCKET: R2Bucket;
+	KV_STORE: KVNamespace;
 }

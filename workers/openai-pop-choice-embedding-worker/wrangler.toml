@@ -13,3 +13,7 @@ preview_bucket_name = "pop-choice-ingestion-bucket-preview"
 
 [triggers]
 crons = ["0 0 * * 0"]
+
+[[kv_namespaces]]
+binding = "KV_STORE"
+id = "1b43874efe6449f9b2aa04f401ea9499"
