@@ -8,10 +8,7 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		const allowedOrigins: Array<string> = [
-			'http://localhost:5173',
-			'https://pop-choice.pages.dev'
-		];
+		const allowedOrigins: Array<string> = ['https://pop-choice.pages.dev'];
 
 		const origin = request.headers.get('Origin') || '';
 		const isOriginAllowed = allowedOrigins.includes(origin);
@@ -44,12 +41,12 @@ export default {
 			const databaseAuthKey: string = env.SUPABASE_API_KEY;
 			const supabase = createClient(databaseUrl, databaseAuthKey);
 
-			const requestPayload = await request.json() as RequestPayload;
+			const embeddings: RequestPayload = await request.json() as RequestPayload;
 
 			const { data, error } = await supabase
 				.schema('public')
 				.rpc('match_movies', {
-					query_embedding: requestPayload.embedding,
+					query_embedding: embeddings,
 					match_threshold: 0.5,
 					match_count: 1
 				});
@@ -77,7 +74,7 @@ export default {
 		} catch (error) {
 			console.error(`Failed to process request with: ${error}`);
 			return new Response(
-				JSON.stringify({ error: `Internal server error: ${error.message || 'Unknown error'}` }), {
+				JSON.stringify({ error: `Internal server error: ${ error.message || 'Unknown error'}` }), {
 					status: 500,
 					headers: {
 						...corsHeaders,
