@@ -17,12 +17,37 @@ export const performInsertEmbeddings = async (scheduledTime: number, env: Env): 
 		const supabase = createClient(databaseUrl, databaseAuthKey);
 
     const fileObject = await env.INGESTION_BUCKET.get("movies.txt");
-    if (!fileObject) {
-			console.info("Failed to retrieve contents of `movies.txt`")
-			return new Response(JSON.stringify({ status: "error" }), { status: 500 });
+
+		if (!fileObject) {
+      console.error("Failed to retrieve contents of `movies.txt`");
+      return new Response(JSON.stringify({ error: "File not found" }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
 		const fileContents = await fileObject.text();
+
+    // Generate hash of file contents
+    const encoder = new TextEncoder();
+    const data = encoder.encode(fileContents);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const currentHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    // Check if hash exists in KV store
+    const previousHash = await env.KV_STORE.get('movies_content_hash');
+
+    if (previousHash === currentHash) {
+      console.info('File contents unchanged, skipping embedding generation');
+      return new Response(JSON.stringify({ success: true, unchanged: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Store new hash before processing
+    await env.KV_STORE.put('movies_content_hash', currentHash);
 
     const delimiter = "–––––––––––––––––––––––––"
     const textSplitter = new CharacterTextSplitter({
