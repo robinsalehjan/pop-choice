@@ -1,0 +1,18 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "supabase-pop-choice-keep-alive-worker",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-05-05",
+	"observability": {
+		"enabled": true
+	},
+	"triggers": {
+		"crons": [
+			"0 12 * * *"
+		]
+	}
+}
