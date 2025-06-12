@@ -166,6 +166,8 @@
                 // Hide loading and show result page
                 loading.style.display = 'none';
                 resultPage.classList.add('active');
+                resultPage.style.opacity = '1';
+                resultPage.style.visibility = 'visible';
 
             } catch (error) {
                 console.error('Error in showResult:', error);
@@ -200,6 +202,8 @@
             setTimeout(() => {
                 document.getElementById('resultPage').classList.remove('active');
                 document.getElementById('questionPage').classList.add('active');
+                document.getElementById('questionPage').style.opacity = '1';
+                document.getElementById('questionPage').style.visibility = 'visible';
             }, 300);
         }
     </script>
