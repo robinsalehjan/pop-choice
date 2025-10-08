@@ -9,11 +9,11 @@
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20250505.0",
-		"typescript": "^5.5.2",
-		"wrangler": "^4.14.1"
+		"@cloudflare/workers-types": "^4.20251008.0",
+		"typescript": "^5.9.3",
+		"wrangler": "^4.42.1"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.49.4"
+		"@supabase/supabase-js": "^2.74.0"
 	}
 }
