@@ -3,59 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get personalized movie recommendations based on your preferences">
     <link rel="stylesheet" href="styles.css">
-    <title>PopChoice</title>
+    <title>PopChoice - Your Personal Movie Recommender</title>
 </head>
 <body>
     <div class="container" role="main">
         <!-- Question Page -->
-        <div id="questionPage" class="page active" role="form" aria-label="Movie Preferences Form">
-            <div class="logo" role="banner">
-                <img src="popchoice.png" class="popcorn" alt="PopChoice Logo">
+        <section id="questionPage" class="page active" aria-label="Movie Preferences Form">
+            <header class="logo" role="banner">
+                <img src="popchoice.png" class="popcorn" alt="PopChoice Logo - Popcorn Icon">
                 <h1>PopChoice</h1>
-            </div>
-            <div class="question" id="favoriteMovieLabel">What's your favorite movie and why?</div>
-            <input
-            type="text"
-            class="input-field"
-            id="favoriteMovie"
-            aria-labelledby="favoriteMovieLabel"
-            aria-required="true"
-            aria-invalid="false">
-            <div class="error-message" id="favoriteMovieError" role="alert">Please tell us your favorite movie</div>
+            </header>
 
-            <div class="question">Are you in the mood for something new or a classic?</div>
-            <input type="text" class="input-field" id="movieEra">
-            <div class="error-message" id="movieEraError">Please tell us what kind of era you prefer</div>
+            <form id="moviePreferencesForm" novalidate>
+                <div class="form-group">
+                    <label for="favoriteMovie" class="question">What's your favorite movie and why?</label>
+                    <input
+                        type="text"
+                        class="input-field"
+                        id="favoriteMovie"
+                        name="favoriteMovie"
+                        aria-required="true"
+                        aria-invalid="false"
+                        aria-describedby="favoriteMovieError"
+                        autocomplete="off">
+                    <div class="error-message" id="favoriteMovieError" role="alert" aria-live="polite">
+                        Please tell us your favorite movie
+                    </div>
+                </div>
 
-            <div class="question">Do you wanna have fun or do you want something serious?</div>
-            <input type="text" class="input-field" id="movieType">
-            <div class="error-message" id="movieTypeError">Please tell us what type of movie you want</div>
+                <div class="form-group">
+                    <label for="movieEra" class="question">Are you in the mood for something new or a classic?</label>
+                    <input
+                        type="text"
+                        class="input-field"
+                        id="movieEra"
+                        name="movieEra"
+                        aria-required="true"
+                        aria-describedby="movieEraError"
+                        autocomplete="off">
+                    <div class="error-message" id="movieEraError" role="alert" aria-live="polite">
+                        Please tell us what kind of era you prefer
+                    </div>
+                </div>
 
-            <button class="button" onclick="showResult()">Let's Go</button>
-        </div>
+                <div class="form-group">
+                    <label for="movieType" class="question">Do you wanna have fun or do you want something serious?</label>
+                    <input
+                        type="text"
+                        class="input-field"
+                        id="movieType"
+                        name="movieType"
+                        aria-required="true"
+                        aria-describedby="movieTypeError"
+                        autocomplete="off">
+                    <div class="error-message" id="movieTypeError" role="alert" aria-live="polite">
+                        Please tell us what type of movie you want
+                    </div>
+                </div>
+
+                <button type="submit" class="button" id="submitButton">Let's Go</button>
+            </form>
+        </section>
 
         <!-- Loading Spinner -->
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
+        <div class="loading" id="loading" role="status" aria-live="polite" aria-label="Loading recommendations">
+            <div class="spinner" aria-hidden="true"></div>
+            <span class="sr-only">Loading your movie recommendations...</span>
         </div>
 
         <!-- Result Page -->
-        <div id="resultPage" class="page">
-            <div class="logo">
-                <img src="popchoice.png" alt="Popcorn" class="popcorn">
+        <section id="resultPage" class="page" aria-label="Movie Recommendations">
+            <header class="logo">
+                <img src="popchoice.png" alt="PopChoice Logo - Popcorn Icon" class="popcorn">
                 <h1>PopChoice</h1>
-            </div>
-            <div class="movie-card">
-                <h2 class="movie-title"></h2>
-                <p class="movie-description"></p>
-            </div>
-            <button class="button" onclick="goAgain()">Go Again</button>
-        </div>
+            </header>
+            <article class="movie-card">
+                <h2 class="movie-title" id="movieTitle"></h2>
+                <p class="movie-description" id="movieDescription"></p>
+            </article>
+            <button type="button" class="button" id="goAgainButton">Go Again</button>
+        </section>
 
         <!-- Error Toast -->
-        <div class="error-toast" id="errorToast">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="error-toast" id="errorToast" role="alert" aria-live="assertive">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12" y2="16"></line>
@@ -64,148 +97,6 @@
         </div>
     </div>
 
-    <script>
-        function validateForm() {
-            const fields = ['favoriteMovie', 'movieEra', 'movieType'];
-            let isValid = true;
-
-            fields.forEach(field => {
-                const value = document.getElementById(field).value.trim();
-                showError(field, !value);
-                if (!value) isValid = false;
-            });
-
-            return isValid;
-        }
-
-        function showError(inputId, show) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(inputId + 'Error');
-
-            if (show) {
-                input.classList.add('error');
-                error.classList.add('visible');
-            } else {
-                input.classList.remove('error');
-                error.classList.remove('visible');
-            }
-        }
-
-        function showErrorToast(message) {
-            const toast = document.getElementById('errorToast');
-            // Add small delay before showing toast
-            setTimeout(() => {
-                toast.classList.add('visible');
-                setTimeout(() => toast.classList.remove('visible'), 3000);
-            }, 100);
-        }
-
-        async function showResult() {
-            if (!validateForm()) return;
-
-            const loading = document.getElementById('loading');
-            const questionPage = document.getElementById('questionPage');
-            const resultPage = document.getElementById('resultPage');
-
-            // Start with question page transition
-            questionPage.style.opacity = '0';
-            questionPage.style.visibility = 'hidden';
-
-            // Wait for transition to complete, then show loading
-            setTimeout(() => {
-                questionPage.classList.remove('active');
-                loading.style.display = 'flex';
-            }, 300);
-
-            try {
-                // Get form values once at the start
-                const formData = {
-                    favoriteMovie: document.getElementById('favoriteMovie').value.trim(),
-                    movieEra: document.getElementById('movieEra').value.trim(),
-                    movieType: document.getElementById('movieType').value.trim()
-                };
-
-                const payload = {
-                    query: `${formData.favoriteMovie}, ${formData.movieEra}, ${formData.movieType}`
-                };
-
-                // Get recommendation
-                const embeddingResponse = await fetch('https://openai-pop-choice-embedding-worker.r-salehjan.workers.dev', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!embeddingResponse.ok) {
-                    throw new Error(`Embedding API error: ${embeddingResponse.status}`);
-                }
-
-                const embeddingData = await embeddingResponse.json();
-
-                const recommendationResponse = await fetch('https://supabase-pop-choice-worker.r-salehjan.workers.dev', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(embeddingData.embedding)
-                });
-
-                if (!recommendationResponse.ok) {
-                    throw new Error(`Recommendation API error: ${recommendationResponse.status}`);
-                }
-
-                const recommendationData = await recommendationResponse.json();
-
-                // Update UI elements
-                const resultPage = document.getElementById('resultPage');
-                resultPage.querySelector('.movie-title').innerText = "Recommended movies";
-                resultPage.querySelector('.movie-description').innerText = recommendationData.content;
-
-                // Hide loading and show result page
-                loading.style.display = 'none';
-                resultPage.classList.add('active');
-                resultPage.style.opacity = '1';
-                resultPage.style.visibility = 'visible';
-
-            } catch (error) {
-                console.error('Error in showResult:', error);
-                showErrorToast('Something went wrong. Please try again.');
-                loading.style.display = 'none';
-
-                // Reset the question page visibility
-                questionPage.style.opacity = '1';
-                questionPage.style.visibility = 'visible';
-                questionPage.classList.add('active');
-
-                // Reset form fields
-                document.getElementById('favoriteMovie').value = '';
-                document.getElementById('movieEra').value = '';
-                document.getElementById('movieType').value = '';
-            }
-        }
-
-        function goAgain() {
-            // Reset input fields
-            document.getElementById('favoriteMovie').value = '';
-            document.getElementById('movieEra').value = '';
-            document.getElementById('movieType').value = '';
-
-            // Reset result fields
-            document.getElementById('resultPage').querySelector('.movie-title').innerText = '';
-            document.getElementById('resultPage').querySelector('.movie-description').innerText = '';
-
-            // Switch pages with transition
-            document.getElementById('resultPage').style.opacity = '0';
-            document.getElementById('resultPage').style.visibility = 'hidden';
-            setTimeout(() => {
-                document.getElementById('resultPage').classList.remove('active');
-                document.getElementById('questionPage').classList.add('active');
-                document.getElementById('questionPage').style.opacity = '1';
-                document.getElementById('questionPage').style.visibility = 'visible';
-            }, 300);
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
