@@ -1,24 +1,12 @@
-## Set correct MIME types for static assets
+/app.js
+  Content-Type: application/javascript
 
 /*.js
-  Content-Type: application/javascript; charset=utf-8
+  Content-Type: application/javascript
 
 /*.css
-  Content-Type: text/css; charset=utf-8
+  Content-Type: text/css
 
-/*.html
-  Content-Type: text/html; charset=utf-8
-
-/*.png
-  Content-Type: image/png
-
-/*.jpg
-  Content-Type: image/jpeg
-
-/*.svg
-  Content-Type: image/svg+xml
-
-## Security headers
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
