@@ -1,0 +1,25 @@
+## Set correct MIME types for static assets
+
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.html
+  Content-Type: text/html; charset=utf-8
+
+/*.png
+  Content-Type: image/png
+
+/*.jpg
+  Content-Type: image/jpeg
+
+/*.svg
+  Content-Type: image/svg+xml
+
+## Security headers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
