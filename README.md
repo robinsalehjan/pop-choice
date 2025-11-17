@@ -1,4 +1,4 @@
-# [PopChoice](https://pop-choice.pages.dev)
+# PopChoice
 
 This repository is a movie recommendation system demonstrating the integration between CloudFlare Workers, CloudFlare AI Gateway, CloudFlare Pages, Supabase/PostgreSQL with PGVector extension, and OpenAI API for semantic search capabilities.
 
